@@ -14,11 +14,11 @@ const News = (props) => {
 
     }
 
-        const [article, setArticle] = useState([]);
-        const [loading, setLoading] = useState(false);
-        const [page , setPage] = useState(1);
-        const [totalResults, setTotalResults] = useState(0);
-    
+    const [article, setArticle] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalResults, setTotalResults] = useState(0);
+
 
     const updateNews = async () => {
 
@@ -27,7 +27,7 @@ const News = (props) => {
         setLoading(true);
         let data = await fetch(url);
         let parsedData = await data.json();
-        
+
         setArticle(parsedData.articles)
         setTotalResults(parsedData.totalResults)
         setLoading(false)
@@ -37,15 +37,15 @@ const News = (props) => {
     }
 
     useEffect(() => {
-        
+
         updateNews();
         document.title = `${capitalizeFirstLetter(props.category)} - News Finder`
     }, [])
-    
+
 
     const handlePrev = async () => {
 
-        setPage(page-1)
+        setPage(page - 1)
         updateNews();
 
     }
@@ -54,87 +54,87 @@ const News = (props) => {
 
     const handleNext = async () => {
 
-        setPage(page+1)
+        setPage(page + 1)
         updateNews();
     }
 
     const fetchMoreData = async () => {
 
-        setPage(page+1)
+        setPage(page + 1)
 
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
         let data = await fetch(url);
         let parsedData = await data.json();
-        
+
         setArticle(article.concat(parsedData.articles))
         setTotalResults(parsedData.totalResults)
 
     }
 
 
-        return (
+    return (
 
-            // new version with infinite scroll
+        // new version with infinite scroll
 
-            <>
-                <h2 className='text-center my-4'>News Finder - Top Trending News</h2>
-                {loading && <Spinner />}
+        <>
+            <h2 className='text-center my-4'>News Finder - Top Trending News</h2>
+            {loading && <Spinner />}
 
-                <InfiniteScroll
-                    dataLength={article.length}
-                    next={fetchMoreData}
-                    hasMore={article.length !== totalResults}
-                    loader={<Spinner/>}>
+            <InfiniteScroll
+                dataLength={article.length}
+                next={fetchMoreData}
+                hasMore={article.length !== totalResults}
+                loader={<Spinner />}>
 
 
-                    <div className="container">
-                        <div className="row">
-                            {article?.map((element) => {
+                <div className="container">
+                    <div className="row">
+                        {article?.map((element) => {
 
-                                return <div className="col-md-4" key={element.url}>
-                                    <NewsItem title={element.title} description={element.description} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
-                                </div>
+                            return <div className="col-md-4" key={element.url}>
+                                <NewsItem title={element.title} description={element.description} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
+                            </div>
 
-                            })}
+                        })}
 
-                        </div>
                     </div>
+                </div>
 
-                </InfiniteScroll>
-            </>
+            </InfiniteScroll>
+        </>
 
 
-            // old version with loading and prev next buttons
+        // old version with loading and prev next buttons
 
-            // <div className="container my-3">
-            //     <h2 className='text-center'>News Finder - Top Trending News</h2>
-            //     {this.state.loading && <Spinner />}
-            //     <div className="row">
+        // <div className="container my-3">
+        //     <h2 className='text-center'>News Finder - Top Trending News</h2>
+        //     {this.state.loading && <Spinner />}
+        //     <div className="row">
 
-            //         {/* this state.loading is used to hide news cards while loading */}
+        //         {/* this state.loading is used to hide news cards while loading */}
 
-            //         {!this.state.loading && this.state.article?.map((element) => {
+        //         {!this.state.loading && this.state.article?.map((element) => {
 
-            //             return <div className="col-md-4" key={element.url}>
-            //                 <NewsItem title={element.title} description={element.description} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
-            //             </div>
+        //             return <div className="col-md-4" key={element.url}>
+        //                 <NewsItem title={element.title} description={element.description} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
+        //             </div>
 
-            //         })}
+        //         })}
 
-            //     </div>
+        //     </div>
 
-            //     {/* this loading is used to hide buttons while loading */}
+        //     {/* this loading is used to hide buttons while loading */}
 
-            //     {!this.state.loading && <div className="container my-3 d-flex justify-content-between">
+        //     {!this.state.loading && <div className="container my-3 d-flex justify-content-between">
 
-            //         <button disabled={this.state.page <= 1} type="button" onClick={this.handlePrev} className="btn btn-dark">&larr; Previous</button>
-            //         <button disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} type="button" onClick={this.handleNext} className="btn btn-dark">Next &rarr;</button>
+        //         <button disabled={this.state.page <= 1} type="button" onClick={this.handlePrev} className="btn btn-dark">&larr; Previous</button>
+        //         <button disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} type="button" onClick={this.handleNext} className="btn btn-dark">Next &rarr;</button>
 
-            //     </div>}
-            // </div>
+        //     </div>}
+        // </div>
 
-        )
-    
+    )
+
 }
 
 News.defaultProps = {
